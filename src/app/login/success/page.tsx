@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
-export default function LoginSuccessPage() {
+function LoginSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -31,16 +31,34 @@ export default function LoginSuccessPage() {
   }, [searchParams, router]);
 
   return (
-    <div className="min-h-screen bg-zinc-50 flex flex-col items-center justify-center p-8">
-      <div className="flex flex-col items-center gap-4 text-center">
-        <div className="p-4 bg-white rounded-2xl shadow-xl shadow-indigo-500/10 border border-zinc-100">
-          <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
-        </div>
-        <div className="space-y-1">
-          <h1 className="text-xl font-bold text-zinc-900">Authenticating...</h1>
-          <p className="text-zinc-500 text-sm">Finishing your secure sign in with Google.</p>
-        </div>
+    <div className="flex flex-col items-center gap-4 text-center">
+      <div className="p-4 bg-white rounded-2xl shadow-xl shadow-indigo-500/10 border border-zinc-100">
+        <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
       </div>
+      <div className="space-y-1">
+        <h1 className="text-xl font-bold text-zinc-900">Authenticating...</h1>
+        <p className="text-zinc-500 text-sm">Finishing your secure sign in with Google.</p>
+      </div>
+    </div>
+  );
+}
+
+export default function LoginSuccessPage() {
+  return (
+    <div className="min-h-screen bg-zinc-50 flex flex-col items-center justify-center p-8">
+      <Suspense fallback={
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div className="p-4 bg-white rounded-2xl shadow-xl shadow-indigo-500/10 border border-zinc-100">
+            <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+          </div>
+          <div className="space-y-1">
+            <h1 className="text-xl font-bold text-zinc-900">Authenticating...</h1>
+            <p className="text-zinc-500 text-sm">Finishing your secure sign in with Google.</p>
+          </div>
+        </div>
+      }>
+        <LoginSuccessContent />
+      </Suspense>
     </div>
   );
 }
