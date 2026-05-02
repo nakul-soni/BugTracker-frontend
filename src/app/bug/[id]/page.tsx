@@ -3,7 +3,6 @@
 import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -174,9 +173,9 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
             </div>
 
             {!isMine && (
-              <button onClick={() => { setReplyingTo(comment); textareaRef.current?.focus(); }} className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:text-indigo-600 dark:hover:text-indigo-400 shadow-sm shrink-0 mb-1">
-                <Reply className="w-3.5 h-3.5" />
-              </button>
+               <button onClick={() => { setReplyingTo(comment); textareaRef.current?.focus(); }} className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-500 hover:text-indigo-600 dark:hover:text-indigo-400 shadow-sm shrink-0 mb-1">
+                 <Reply className="w-3.5 h-3.5" />
+               </button>
             )}
           </div>
         </div>
@@ -250,7 +249,7 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
 
   const isActionDisabled = myRole === 'TESTER' || (myRole === 'DEVELOPER' && bug?.assignedTo !== myUserId);
 
-  if (loading) return <div className="flex items-center justify-center h-full">Loading...</div>;
+  if (loading) return <div className="flex items-center justify-center h-full text-zinc-500">Loading bug details...</div>;
   if (!bug) return <div className="flex items-center justify-center h-full text-zinc-500">Bug not found</div>;
 
   return (
@@ -263,6 +262,7 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
         </Link>
         <div className="flex flex-col gap-2">
           <div className="flex flex-wrap items-center gap-3">
+            <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse hidden sm:block" />
             <Badge className="bg-indigo-100 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400 border-none px-2 py-0.5 text-xs font-bold uppercase tracking-wider">{bug.status.replace("_", " ")}</Badge>
             <span className="text-zinc-500 dark:text-zinc-400 text-sm flex items-center gap-1.5">
               <Folder className="w-3.5 h-3.5" /> {bug.project?.name || "Unknown Project"}
@@ -277,16 +277,16 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
       <div className="grid gap-6 lg:gap-8 lg:grid-cols-4 flex-1 lg:min-h-0 pb-2">
         {/* Left Sidebar (Col 1) */}
         <div className="lg:col-span-1 lg:h-full lg:overflow-y-auto lg:pr-2 custom-scrollbar">
-          <Card className="bg-white dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-800 shadow-xl backdrop-blur-sm overflow-hidden">
-            <CardHeader className="pb-4 border-b border-zinc-100 dark:border-zinc-800/50 bg-zinc-50/50 dark:bg-zinc-900/50">
-              <CardTitle className="text-lg text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+          <div className="bg-white dark:bg-[#151923] border border-zinc-200 dark:border-zinc-800/80 rounded-2xl shadow-sm overflow-hidden">
+            <div className="p-5 pb-4 border-b border-zinc-100 dark:border-zinc-800/50">
+              <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                 <Settings className="w-4 h-4 text-indigo-500" /> Properties
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-5 p-5 text-sm">
+              </h3>
+            </div>
+            <div className="space-y-5 p-5 text-sm">
               <div className="space-y-1.5">
                 <Label className="text-zinc-500 dark:text-zinc-400 text-xs font-semibold uppercase tracking-wider">Status</Label>
-                <select disabled={isActionDisabled} value={bug.status} onChange={e => updateBugField('status', e.target.value)} className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 rounded-lg px-3 py-2 outline-none border border-zinc-200 dark:border-zinc-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-all focus:ring-1 focus:ring-indigo-500">
+                <select disabled={isActionDisabled} value={bug.status} onChange={e => updateBugField('status', e.target.value)} className="w-full bg-zinc-50 dark:bg-zinc-800/50 text-zinc-900 dark:text-zinc-100 rounded-lg px-3 py-2 outline-none border border-zinc-200 dark:border-zinc-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-none transition-all focus:border-indigo-500">
                   <option value="OPEN">Open</option>
                   <option value="ASSIGNED">Assigned</option>
                   <option value="IN_PROGRESS">In Progress</option>
@@ -298,7 +298,7 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
               </div>
               <div className="space-y-1.5">
                 <Label className="text-zinc-500 dark:text-zinc-400 text-xs font-semibold uppercase tracking-wider">Severity</Label>
-                <select disabled={isActionDisabled} value={bug.severity} onChange={e => updateBugField('severity', e.target.value)} className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 rounded-lg px-3 py-2 outline-none border border-zinc-200 dark:border-zinc-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-all focus:ring-1 focus:ring-indigo-500">
+                <select disabled={isActionDisabled} value={bug.severity} onChange={e => updateBugField('severity', e.target.value)} className="w-full bg-zinc-50 dark:bg-zinc-800/50 text-zinc-900 dark:text-zinc-100 rounded-lg px-3 py-2 outline-none border border-zinc-200 dark:border-zinc-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-none transition-all focus:border-indigo-500">
                   <option value="LOW">Low</option>
                   <option value="MINOR">Minor</option>
                   <option value="MAJOR">Major</option>
@@ -308,7 +308,7 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
               </div>
               <div className="space-y-1.5">
                 <Label className="text-zinc-500 dark:text-zinc-400 text-xs font-semibold uppercase tracking-wider">Priority</Label>
-                <select disabled={isActionDisabled} value={bug.priority} onChange={e => updateBugField('priority', e.target.value)} className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 rounded-lg px-3 py-2 outline-none border border-zinc-200 dark:border-zinc-800 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-all focus:ring-1 focus:ring-indigo-500">
+                <select disabled={isActionDisabled} value={bug.priority} onChange={e => updateBugField('priority', e.target.value)} className="w-full bg-zinc-50 dark:bg-zinc-800/50 text-zinc-900 dark:text-zinc-100 rounded-lg px-3 py-2 outline-none border border-zinc-200 dark:border-zinc-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-none transition-all focus:border-indigo-500">
                   <option value="LOW">Low</option>
                   <option value="MEDIUM">Medium</option>
                   <option value="HIGH">High</option>
@@ -325,14 +325,14 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
                   )}
                 </div>
                 {myRole === 'MANAGER' || (myRole === 'DEVELOPER' && bug.assignedTo === myUserId) ? (
-                  <select value={bug.assignedTo || ""} onChange={e => updateBugField('assignedTo', e.target.value)} className="w-full bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 rounded-lg px-3 py-2 outline-none border border-zinc-200 dark:border-zinc-800 cursor-pointer shadow-sm transition-all focus:ring-1 focus:ring-indigo-500">
+                  <select value={bug.assignedTo || ""} onChange={e => updateBugField('assignedTo', e.target.value)} className="w-full bg-zinc-50 dark:bg-zinc-800/50 text-zinc-900 dark:text-zinc-100 rounded-lg px-3 py-2 outline-none border border-zinc-200 dark:border-zinc-700 cursor-pointer shadow-none transition-all focus:border-indigo-500">
                     <option value="">Unassigned</option>
                     {members.filter(m => m.role !== 'TESTER').map(m => (
                       <option key={m.userId} value={m.userId}>{m.user.name} ({m.role})</option>
                     ))}
                   </select>
                 ) : (
-                  <div className="flex items-center gap-2 p-2 bg-zinc-50 dark:bg-zinc-950 rounded-lg border border-zinc-200 dark:border-zinc-800">
+                  <div className="flex items-center gap-2 p-2 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg border border-zinc-200 dark:border-zinc-700">
                     <User className="w-4 h-4 text-zinc-400" />
                     <span className="font-medium text-zinc-900 dark:text-zinc-100">
                       {bug.assignedTo ? members.find(m => m.userId === bug.assignedTo)?.user.name : <span className="text-zinc-500 italic">Unassigned</span>}
@@ -349,27 +349,27 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
                   <span className="font-medium text-zinc-900 dark:text-zinc-100">{bug.reporter?.name}</span>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Main Content Area (Col 2-4) */}
         <div className="lg:col-span-3 flex flex-col lg:h-full lg:min-h-0">
           
           {/* Custom Tabs Navigation */}
-          <div className="flex gap-2 p-1 bg-zinc-100/50 dark:bg-zinc-900/50 border border-zinc-200/50 dark:border-zinc-800/50 rounded-xl w-full sm:w-fit backdrop-blur-sm shrink-0 mb-4 overflow-x-auto max-w-full custom-scrollbar">
-            <button onClick={() => setActiveTab('description')} className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === 'description' ? 'bg-white dark:bg-zinc-800 text-indigo-600 dark:text-indigo-400 shadow-sm ring-1 ring-zinc-200/50 dark:ring-zinc-700/50' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50'}`}>
+          <div className="flex gap-2 p-1.5 bg-zinc-100 dark:bg-[#151923] border border-zinc-200 dark:border-zinc-800/80 rounded-xl w-full sm:w-fit shrink-0 mb-4 overflow-x-auto max-w-full custom-scrollbar">
+            <button onClick={() => setActiveTab('description')} className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === 'description' ? 'bg-white dark:bg-zinc-800 shadow-sm text-zinc-900 dark:text-zinc-100' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50'}`}>
               <FileText className="w-4 h-4" /> Description
             </button>
-            <button onClick={() => setActiveTab('discussion')} className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === 'discussion' ? 'bg-white dark:bg-zinc-800 text-indigo-600 dark:text-indigo-400 shadow-sm ring-1 ring-zinc-200/50 dark:ring-zinc-700/50' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50'}`}>
+            <button onClick={() => setActiveTab('discussion')} className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === 'discussion' ? 'bg-white dark:bg-zinc-800 shadow-sm text-zinc-900 dark:text-zinc-100' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50'}`}>
               <MessageSquare className="w-4 h-4" /> Discussion
               {bug.comments?.length > 0 && (
-                <span className={`ml-1 px-2 py-0.5 rounded-full text-xs ${activeTab === 'discussion' ? 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300' : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'}`}>
+                <span className={`ml-1 px-2 py-0.5 rounded-full text-xs ${activeTab === 'discussion' ? 'bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300' : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'}`}>
                   {bug.comments.length}
                 </span>
               )}
             </button>
-            <button onClick={() => setActiveTab('activity')} className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === 'activity' ? 'bg-white dark:bg-zinc-800 text-indigo-600 dark:text-indigo-400 shadow-sm ring-1 ring-zinc-200/50 dark:ring-zinc-700/50' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50'}`}>
+            <button onClick={() => setActiveTab('activity')} className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${activeTab === 'activity' ? 'bg-white dark:bg-zinc-800 shadow-sm text-zinc-900 dark:text-zinc-100' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50'}`}>
               <Activity className="w-4 h-4" /> Activity Log
             </button>
           </div>
@@ -377,8 +377,8 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
           {/* Tab Contents */}
           <div className="flex-1 lg:min-h-0 lg:overflow-y-auto custom-scrollbar lg:pr-2 animate-in fade-in slide-in-from-bottom-2 duration-300">
             {activeTab === 'description' && (
-              <Card className="bg-white dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-800 shadow-xl backdrop-blur-sm lg:h-full flex flex-col min-h-[400px]">
-                <CardContent className="p-4 sm:p-6 md:p-8 space-y-8 flex-1 lg:overflow-y-auto custom-scrollbar">
+              <div className="bg-white dark:bg-[#151923] border border-zinc-200 dark:border-zinc-800/80 shadow-sm rounded-2xl lg:h-full flex flex-col min-h-[400px]">
+                <div className="p-4 sm:p-6 md:p-8 space-y-8 flex-1 lg:overflow-y-auto custom-scrollbar">
                   <div data-color-mode={resolvedTheme === "dark" ? "dark" : "light"} className="bg-transparent text-zinc-900 dark:text-zinc-300 prose prose-zinc dark:prose-invert max-w-none">
                     <MarkdownRender source={bug.description} style={{ backgroundColor: 'transparent', color: 'inherit' }} />
                   </div>
@@ -392,7 +392,7 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
                       {bug.attachments?.length > 0 && (
                         <div className="flex flex-wrap gap-3 mb-6">
                           {bug.attachments.map((att: any) => (
-                            <a key={att.id} href={att.fileUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 hover:border-indigo-300 dark:hover:border-indigo-700 rounded-lg text-sm text-zinc-700 dark:text-zinc-300 transition-colors shadow-sm group">
+                            <a key={att.id} href={att.fileUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-4 py-2 bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 hover:border-indigo-300 dark:hover:border-indigo-700 rounded-lg text-sm text-zinc-700 dark:text-zinc-300 transition-colors shadow-none group">
                               <FileText className="w-4 h-4 text-zinc-400 group-hover:text-indigo-500 transition-colors" />
                               <span className="truncate max-w-[200px]">{att.fileUrl.split('/').pop()}</span>
                             </a>
@@ -401,7 +401,7 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
                       )}
                       
                       {myRole !== 'DEVELOPER' && (
-                        <div className="bg-zinc-50 dark:bg-zinc-950/50 border border-dashed border-zinc-300 dark:border-zinc-700 rounded-xl p-6 text-center hover:bg-zinc-100 dark:hover:bg-zinc-900/50 transition-colors">
+                        <div className="bg-zinc-50 dark:bg-zinc-800/30 border border-dashed border-zinc-300 dark:border-zinc-700 rounded-xl p-6 text-center hover:bg-zinc-100 dark:hover:bg-zinc-800/60 transition-colors">
                           <Label className="flex flex-col items-center cursor-pointer">
                             <div className="w-10 h-10 bg-indigo-50 dark:bg-indigo-500/10 rounded-full flex items-center justify-center mb-3">
                               <Paperclip className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
@@ -415,13 +415,13 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
                       )}
                     </div>
                   )}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
 
             {activeTab === 'discussion' && (
-              <Card className="bg-white dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-800 shadow-xl backdrop-blur-sm overflow-hidden flex flex-col lg:h-full min-h-[500px]">
-                <CardContent className="p-0 flex-1 flex flex-col relative lg:h-full">
+              <div className="bg-white dark:bg-[#151923] border border-zinc-200 dark:border-zinc-800/80 shadow-sm rounded-2xl overflow-hidden flex flex-col lg:h-full min-h-[500px]">
+                <div className="flex-1 flex flex-col relative lg:h-full">
                   <div className="flex-1 p-4 md:p-6 lg:overflow-y-auto custom-scrollbar flex flex-col">
                     {[...(bug.comments || [])].sort((a:any, b:any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()).map((comment: any) => (
                       <CommentItem key={comment.id} comment={comment} />
@@ -437,7 +437,7 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
                     )}
                   </div>
 
-                  <div className="p-4 bg-zinc-50 dark:bg-zinc-900/80 border-t border-zinc-200 dark:border-zinc-800/50">
+                  <div className="p-4 bg-zinc-50 dark:bg-zinc-900/50 border-t border-zinc-200 dark:border-zinc-800/80">
                     <div className="space-y-3 relative">
                       {replyingTo && (
                         <div className="flex items-center justify-between bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-3 py-2 rounded-lg text-sm text-zinc-700 dark:text-zinc-300 shadow-sm">
@@ -466,22 +466,22 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
                           value={commentContent}
                           onChange={handleCommentChange}
                           placeholder="Type @ to mention someone..." 
-                          className="bg-white dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 focus-visible:ring-indigo-500 shadow-sm min-h-[60px] resize-y" 
+                          className="bg-white dark:bg-[#0B0E14] border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 focus-visible:border-indigo-500 shadow-none min-h-[60px] resize-y" 
                           rows={2} 
                         />
-                        <Button onClick={handlePostComment} disabled={commenting || !commentContent.trim()} className="bg-indigo-600 hover:bg-indigo-700 text-white h-[60px] px-6 shadow-md shadow-indigo-500/20 shrink-0">
+                        <Button onClick={handlePostComment} disabled={commenting || !commentContent.trim()} className="bg-indigo-600 hover:bg-indigo-700 text-white h-[60px] px-6 shadow-sm shrink-0">
                           {commenting ? <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div> : <Send className="w-5 h-5" />}
                         </Button>
                       </div>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
 
             {activeTab === 'activity' && (
-              <Card className="bg-white dark:bg-zinc-900/40 border-zinc-200 dark:border-zinc-800 shadow-xl backdrop-blur-sm lg:h-full flex flex-col min-h-[400px]">
-                <CardContent className="p-4 sm:p-6 md:p-8 flex-1 lg:overflow-y-auto custom-scrollbar">
+              <div className="bg-white dark:bg-[#151923] border border-zinc-200 dark:border-zinc-800/80 shadow-sm rounded-2xl lg:h-full flex flex-col min-h-[400px]">
+                <div className="p-4 sm:p-6 md:p-8 flex-1 lg:overflow-y-auto custom-scrollbar">
                   {activityLogs.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-16 text-center">
                       <div className="w-16 h-16 bg-zinc-100 dark:bg-zinc-800/50 rounded-full flex items-center justify-center mb-4 border border-zinc-200 dark:border-zinc-700">
@@ -498,10 +498,10 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
                         
                         return (
                           <div key={log.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                            <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-zinc-950 bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm z-10">
+                            <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-[#151923] bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-sm z-10">
                               <Activity className="w-4 h-4" />
                             </div>
-                            <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/80 dark:bg-zinc-900/80 shadow-sm transition-all hover:shadow-md">
+                            <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-zinc-50 dark:bg-zinc-800/30 shadow-sm transition-all hover:border-zinc-300 dark:hover:border-zinc-700">
                               <div className="flex items-center justify-between mb-3">
                                 <div className="font-bold text-sm text-zinc-900 dark:text-zinc-100">{log.userName}</div>
                                 <div className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">{new Date(log.createdAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' })}</div>
@@ -515,7 +515,7 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
                                   if (change.field === 'assignedTo') Icon = User;
                                   
                                   return (
-                                    <div key={i} className="flex flex-col gap-1.5 p-2 rounded-lg bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-800/50">
+                                    <div key={i} className="flex flex-col gap-1.5 p-2 rounded-lg bg-white dark:bg-[#151923] border border-zinc-100 dark:border-zinc-800/80">
                                       <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider flex items-center gap-1.5">
                                         <Icon className="w-3 h-3" /> {change.field}
                                       </div>
@@ -538,8 +538,8 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
                       })}
                     </div>
                   )}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
           </div>
         </div>
