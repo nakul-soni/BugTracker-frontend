@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { LogOut, Moon, Sun, Bug, Folder, Building, Menu, X, LayoutDashboard, AlertCircle, Activity, CheckCircle2, Settings2, SlidersHorizontal, Search, Bell } from "lucide-react";
 import { Button } from "./ui/button";
+import { API_BASE_URL } from "@/lib/api";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -18,7 +19,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     setMounted(true);
     const token = localStorage.getItem("token");
     if (token && !pathname.startsWith('/login') && !pathname.startsWith('/register')) {
-      fetch("http://localhost:3001/api/auth/me", { headers: { Authorization: `Bearer ${token}` } })
+      fetch(`${API_BASE_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` } })
         .then(res => res.json())
         .then(data => { if (data.email) setUser(data); else router.push('/login'); })
         .catch(() => router.push('/login'));

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { API_BASE_URL } from "@/lib/api";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -23,7 +24,7 @@ export default function RegisterPage() {
     const payload = Object.fromEntries(formData);
 
     try {
-      const res = await fetch("http://localhost:3001/api/auth/register", {
+      const res = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -47,7 +48,7 @@ export default function RegisterPage() {
   }
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3001/api/auth/google";
+    window.location.href = `${API_BASE_URL}/api/auth/google`;
   };
 
   return (

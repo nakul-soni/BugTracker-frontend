@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Folder, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { API_BASE_URL } from "@/lib/api";
 
 export default function OrganizationPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -23,9 +24,9 @@ export default function OrganizationPage({ params }: { params: Promise<{ id: str
     const token = localStorage.getItem("token");
     try {
       const [orgRes, projRes, meRes] = await Promise.all([
-        fetch(`http://localhost:3001/api/organizations/${resolvedParams.id}`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`http://localhost:3001/api/projects?orgId=${resolvedParams.id}`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch("http://localhost:3001/api/auth/me", { headers: { Authorization: `Bearer ${token}` } })
+        fetch(`${API_BASE_URL}/api/organizations/${resolvedParams.id}`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API_BASE_URL}/api/projects?orgId=${resolvedParams.id}`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API_BASE_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
       const orgData = await orgRes.json();
       const projData = await projRes.json();
@@ -49,7 +50,7 @@ export default function OrganizationPage({ params }: { params: Promise<{ id: str
     e.preventDefault();
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch("http://localhost:3001/api/projects", {
+      const res = await fetch(`${API_BASE_URL}/api/projects`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ name: newProjectName, organizationId: resolvedParams.id })
@@ -71,7 +72,7 @@ export default function OrganizationPage({ params }: { params: Promise<{ id: str
     if (!confirm("Are you sure you want to delete this project? All bugs and data will be permanently lost.")) return;
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch(`http://localhost:3001/api/projects/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/projects/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
       });

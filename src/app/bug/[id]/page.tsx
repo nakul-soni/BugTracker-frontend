@@ -13,6 +13,7 @@ import { useRef } from "react";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
 import { Activity, MessageSquare, FileText, Settings, User, AlertCircle, ArrowLeft, Paperclip, Send, Folder, X, Reply, ArrowRight, Tag, ShieldAlert, CheckCircle2 } from "lucide-react";
+import { API_BASE_URL } from "@/lib/api";
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor").then((mod) => mod.default), { ssr: false });
 const MarkdownRender = dynamic(() => import("@uiw/react-md-editor").then((mod) => mod.default.Markdown), { ssr: false });
@@ -43,8 +44,8 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
     }
     try {
       const [bugRes, activityRes] = await Promise.all([
-        fetch(`http://localhost:3001/api/bugs/${resolvedParams.id}`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`http://localhost:3001/api/bugs/${resolvedParams.id}/activity`, { headers: { Authorization: `Bearer ${token}` } })
+        fetch(`${API_BASE_URL}/api/bugs/${resolvedParams.id}`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API_BASE_URL}/api/bugs/${resolvedParams.id}/activity`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
       if (!bugRes.ok) throw new Error("Failed to fetch bug");
       
@@ -65,7 +66,7 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
   useEffect(() => {
     fetchBug();
 
-    const socket = io('http://localhost:3001');
+    const socket = io(API_BASE_URL);
     socket.on('bugUpdated', (data) => {
       if (data.bugId === resolvedParams.id) fetchBug();
     });
@@ -83,7 +84,7 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
     setCommenting(true);
     try {
       const token = localStorage.getItem("token");
-      await fetch("http://localhost:3001/api/comments", {
+      await fetch(`${API_BASE_URL}/api/comments`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -194,7 +195,7 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
 
     try {
       const token = localStorage.getItem("token");
-      await fetch("http://localhost:3001/api/attachments", {
+      await fetch(`${API_BASE_URL}/api/attachments`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
         body: formData
@@ -211,7 +212,7 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
   const updateBugField = async (field: string, value: string) => {
     try {
       const token = localStorage.getItem("token");
-      await fetch(`http://localhost:3001/api/bugs/${bug.id}`, {
+      await fetch(`${API_BASE_URL}/api/bugs/${bug.id}`, {
         method: "PATCH",
         headers: { 
           "Content-Type": "application/json",
@@ -230,8 +231,8 @@ export default function BugDetailsPage({ params }: { params: Promise<{ id: strin
     if (bug?.projectId) {
       const token = localStorage.getItem("token");
       Promise.all([
-        fetch(`http://localhost:3001/api/projects/${bug.projectId}/members`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch("http://localhost:3001/api/auth/me", { headers: { Authorization: `Bearer ${token}` } })
+        fetch(`${API_BASE_URL}/api/projects/${bug.projectId}/members`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API_BASE_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` } })
       ])
       .then(async ([memRes, meRes]) => {
         const memData = await memRes.json();

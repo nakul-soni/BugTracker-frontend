@@ -5,6 +5,7 @@ import { Suspense, useEffect, useState } from "react";
 import { AlertCircle, Activity, CheckCircle2, Loader2, Bug } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { API_BASE_URL } from "@/lib/api";
 
 function BugsContent() {
   const searchParams = useSearchParams();
@@ -21,7 +22,7 @@ function BugsContent() {
       return;
     }
 
-    fetch("http://localhost:3001/api/bugs", {
+    fetch(`${API_BASE_URL}/api/bugs`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => {

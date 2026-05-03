@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Building, ArrowRight, Plus, FolderHeart, Users, Trash2 } from "lucide-react";
+import { API_BASE_URL } from "@/lib/api";
 
 export default function OrganizationsPage() {
   const router = useRouter();
@@ -22,8 +23,8 @@ export default function OrganizationsPage() {
 
     try {
       const [orgsRes, meRes] = await Promise.all([
-        fetch("http://localhost:3001/api/organizations", { headers: { Authorization: `Bearer ${token}` } }),
-        fetch("http://localhost:3001/api/auth/me", { headers: { Authorization: `Bearer ${token}` } })
+        fetch(`${API_BASE_URL}/api/organizations`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API_BASE_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
       const orgsData = await orgsRes.json();
       const meData = await meRes.json();
@@ -45,7 +46,7 @@ export default function OrganizationsPage() {
     e.preventDefault();
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch("http://localhost:3001/api/organizations", {
+      const res = await fetch(`${API_BASE_URL}/api/organizations`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ name: newOrgName })
@@ -68,7 +69,7 @@ export default function OrganizationsPage() {
     if (!confirm("Are you sure you want to delete this organization? All projects and bugs within it will be permanently lost.")) return;
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch(`http://localhost:3001/api/organizations/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/organizations/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
       });

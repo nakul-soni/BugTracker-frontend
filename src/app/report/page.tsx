@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import dynamic from "next/dynamic";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
+import { API_BASE_URL } from "@/lib/api";
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
@@ -26,7 +27,7 @@ export default function ReportBugPage() {
       router.push("/login");
       return;
     }
-    fetch("http://localhost:3001/api/projects", {
+    fetch(`${API_BASE_URL}/api/projects`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -53,7 +54,7 @@ export default function ReportBugPage() {
         projectId: formData.get("projectId") || projects[0].id,
       };
 
-      const res = await fetch("http://localhost:3001/api/bugs", {
+      const res = await fetch(`${API_BASE_URL}/api/bugs`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",

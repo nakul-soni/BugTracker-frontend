@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Folder, Building, ArrowRight, Search, Filter } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { API_BASE_URL } from "@/lib/api";
 
 export default function ProjectsListPage() {
   const router = useRouter();
@@ -23,7 +24,7 @@ export default function ProjectsListPage() {
       return;
     }
 
-    fetch("http://localhost:3001/api/projects", {
+    fetch(`${API_BASE_URL}/api/projects`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => {

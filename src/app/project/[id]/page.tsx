@@ -9,6 +9,7 @@ import { KanbanBoard } from "@/components/kanban-board";
 import { LayoutGrid, List, Search, Filter, UserPlus, Bug as BugIcon, Users, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { API_BASE_URL } from "@/lib/api";
 
 export default function ProjectBugsPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -38,7 +39,7 @@ export default function ProjectBugsPage({ params }: { params: Promise<{ id: stri
   const handleStatusChange = async (bugId: string, newStatus: string) => {
     const token = localStorage.getItem("token");
     try {
-      await fetch(`http://localhost:3001/api/bugs/${bugId}`, {
+      await fetch(`${API_BASE_URL}/api/bugs/${bugId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ status: newStatus })
@@ -52,10 +53,10 @@ export default function ProjectBugsPage({ params }: { params: Promise<{ id: stri
     const token = localStorage.getItem("token");
     try {
       const [bugsRes, meRes, memRes, usersRes] = await Promise.all([
-        fetch(`http://localhost:3001/api/bugs?projectId=${resolvedParams.id}`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch("http://localhost:3001/api/auth/me", { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`http://localhost:3001/api/projects/${resolvedParams.id}/members`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch("http://localhost:3001/api/users", { headers: { Authorization: `Bearer ${token}` } })
+        fetch(`${API_BASE_URL}/api/bugs?projectId=${resolvedParams.id}`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API_BASE_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API_BASE_URL}/api/projects/${resolvedParams.id}/members`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API_BASE_URL}/api/users`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
       const bugsData = await bugsRes.json();
       const meData = await meRes.json();
@@ -85,7 +86,7 @@ export default function ProjectBugsPage({ params }: { params: Promise<{ id: stri
     e.preventDefault();
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch(`http://localhost:3001/api/projects/${resolvedParams.id}/members`, {
+      const res = await fetch(`${API_BASE_URL}/api/projects/${resolvedParams.id}/members`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ email: inviteEmail, role: inviteRole })
@@ -108,7 +109,7 @@ export default function ProjectBugsPage({ params }: { params: Promise<{ id: stri
     if (!confirm("Are you sure you want to remove this member?")) return;
     const token = localStorage.getItem("token");
     try {
-      const res = await fetch(`http://localhost:3001/api/projects/${resolvedParams.id}/members/${targetUserId}`, {
+      const res = await fetch(`${API_BASE_URL}/api/projects/${resolvedParams.id}/members/${targetUserId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
       });

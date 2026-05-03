@@ -3,6 +3,7 @@
 import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { API_BASE_URL } from "@/lib/api";
 
 function LoginSuccessContent() {
   const router = useRouter();
@@ -14,7 +15,7 @@ function LoginSuccessContent() {
       localStorage.setItem("token", token);
       
       // Fetch user data to populate localStorage
-      fetch("http://localhost:3001/api/auth/me", {
+      fetch(`${API_BASE_URL}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       .then(res => res.json())

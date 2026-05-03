@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Bug, AlertCircle, Activity as ActivityIcon, CheckCircle2, MoreHorizontal, Settings, User, ArrowRight, ShieldAlert } from "lucide-react";
+import { API_BASE_URL } from "@/lib/api";
 
 export default function BugsDashboard() {
   const router = useRouter();
@@ -21,8 +22,8 @@ export default function BugsDashboard() {
     }
 
     Promise.all([
-      fetch("http://localhost:3001/api/bugs", { headers: { Authorization: `Bearer ${token}` } }),
-      fetch("http://localhost:3001/api/bugs/activity/all", { headers: { Authorization: `Bearer ${token}` } })
+      fetch(`${API_BASE_URL}/api/bugs`, { headers: { Authorization: `Bearer ${token}` } }),
+      fetch(`${API_BASE_URL}/api/bugs/activity/all`, { headers: { Authorization: `Bearer ${token}` } })
     ])
       .then(async ([bugsRes, activityRes]) => {
         if (!bugsRes.ok) throw new Error("Unauthorized");
