@@ -145,6 +145,34 @@
   mix-blend-mode: normal;
 }
 
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 9999;
+  animation: 500ms ease-out both reveal;
+}
+
+.dark::view-transition-old(root) {
+  z-index: 9999;
+  animation: 500ms ease-out both unreveal;
+}
+
+.dark::view-transition-new(root) {
+  z-index: 1;
+}
+
+@keyframes reveal {
+  from { clip-path: circle(0 at var(--x) var(--y)); }
+  to { clip-path: circle(120vmax at var(--x) var(--y)); }
+}
+
+@keyframes unreveal {
+  from { clip-path: circle(120vmax at var(--x) var(--y)); }
+  to { clip-path: circle(0 at var(--x) var(--y)); }
+}
+
 @keyframes gradient {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }

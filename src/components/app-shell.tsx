@@ -3,6 +3,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
+import { flushSync } from "react-dom";
 import { LogOut, Moon, Sun, Bug, Folder, Building, Menu, X, LayoutDashboard, AlertCircle, Activity, CheckCircle2, Settings2, SlidersHorizontal, Search, Bell } from "lucide-react";
 import { Button } from "./ui/button";
 import { API_BASE_URL } from "@/lib/api";
@@ -15,6 +16,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<any>(null);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -73,10 +75,31 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const handleLogout = () => {
     localStorage.removeItem("token");
     router.push("/login");
+    setShowLogoutConfirm(false);
   };
 
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
+  const toggleTheme = (e: React.MouseEvent) => {
+    const isDark = theme === 'dark';
+    const nextTheme = isDark ? 'light' : 'dark';
+
+    // @ts-ignore - View Transitions API
+    if (!document.startViewTransition) {
+      setTheme(nextTheme);
+      return;
+    }
+
+    const x = e.clientX;
+    const y = e.clientY;
+    
+    document.documentElement.style.setProperty('--x', `${x}px`);
+    document.documentElement.style.setProperty('--y', `${y}px`);
+
+    // @ts-ignore
+    document.startViewTransition(() => {
+      flushSync(() => {
+        setTheme(nextTheme);
+      });
+    });
   };
 
   const NavItem = ({ href, icon: Icon, label, badge, activePath }: { href: string, icon: any, label: string, badge?: number, activePath?: string }) => {
@@ -163,12 +186,43 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <span className="text-[10px] text-zinc-500 dark:text-zinc-500 truncate">{user?.email || "Loading..."}</span>
               </div>
             </div>
-            <button onClick={handleLogout} className="p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 rounded-md transition-colors flex-shrink-0">
+            <button onClick={() => setShowLogoutConfirm(true)} className="p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 rounded-md transition-colors flex-shrink-0">
               <LogOut className="h-4 w-4" />
             </button>
           </div>
         </div>
       </aside>
+
+      {/* Logout Confirmation Dialog */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <div className="absolute inset-0 bg-zinc-950/40 backdrop-blur-md" onClick={() => setShowLogoutConfirm(false)} />
+          <div className="relative bg-white dark:bg-[#0b0e14] border border-zinc-200 dark:border-zinc-800 p-8 rounded-3xl shadow-2xl max-w-sm w-full animate-in zoom-in-95 duration-300">
+             <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center mb-6">
+                <LogOut className="w-6 h-6 text-rose-500" />
+             </div>
+             <h3 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">Sign Out</h3>
+             <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-8 leading-relaxed">
+               Are you sure you want to log out of your account? You will need to sign in again to access your bugs and projects.
+             </p>
+             <div className="flex gap-3">
+               <Button 
+                 variant="ghost" 
+                 className="flex-1 rounded-xl h-12 font-semibold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                 onClick={() => setShowLogoutConfirm(false)}
+               >
+                 Cancel
+               </Button>
+               <Button 
+                 className="flex-1 bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 hover:bg-zinc-800 dark:hover:bg-zinc-200 rounded-xl h-12 font-bold shadow-lg shadow-zinc-950/20"
+                 onClick={handleLogout}
+               >
+                 Logout
+               </Button>
+             </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative bg-[#fafafa] dark:bg-[#0b0e14]">

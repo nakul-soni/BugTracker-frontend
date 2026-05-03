@@ -193,7 +193,10 @@ export default function BugsDashboard() {
               <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-[200px] leading-relaxed mb-6">
                 Once your team starts reporting issues, they'll appear here.
               </p>
-              <Button className="bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-xs font-semibold h-8 rounded-lg shadow-none border-none">
+              <Button 
+                onClick={() => router.push("/report")}
+                className="bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-xs font-semibold h-8 rounded-lg shadow-none border-none"
+              >
                 + Report your first bug
               </Button>
             </div>
@@ -301,9 +304,20 @@ export default function BugsDashboard() {
                           <span className="text-zinc-500 dark:text-zinc-500">{new Date(log.createdAt).toLocaleString([], { month: 'short', day: 'numeric' })}</span>
                         </div>
                         <div className="mb-2 text-xs text-zinc-500 dark:text-zinc-400">
-                          Updated <Link href={`/bug/${log.metadata?.bugId}`} className="text-indigo-600 dark:text-indigo-400 hover:underline">{log.bugTitle}</Link>
+                          {log.action === 'CREATED' ? 'Reported new bug ' : log.action === 'COMMENTED' ? 'Commented on ' : 'Updated '}
+                          <Link href={`/bug/${log.metadata?.bugId}`} className="text-indigo-600 dark:text-indigo-400 hover:underline">{log.bugTitle}</Link>
                         </div>
                         <div className="space-y-2">
+                          {log.action === 'CREATED' && (
+                            <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-500/5 border border-emerald-100 dark:border-emerald-500/20 text-[10px] text-emerald-700 dark:text-emerald-400 font-medium">
+                              Initial report submitted
+                            </div>
+                          )}
+                          {log.action === 'COMMENTED' && (
+                            <div className="p-2 rounded-lg bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-100 dark:border-zinc-800/50 text-[10px] text-zinc-600 dark:text-zinc-300 italic line-clamp-2">
+                              New feedback added to this issue
+                            </div>
+                          )}
                           {changes.slice(0, 2).map((change: any, i: number) => {
                             let Icon = Settings;
                             if (change.field === 'status') Icon = CheckCircle2;
