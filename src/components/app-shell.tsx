@@ -14,21 +14,57 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
     setMounted(true);
+    const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/register');
+    
+    if (isAuthRoute) {
+      setAuthLoading(false);
+      return;
+    }
+
     const token = localStorage.getItem("token");
-    if (token && !pathname.startsWith('/login') && !pathname.startsWith('/register')) {
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+
+    if (!user) {
       fetch(`${API_BASE_URL}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` } })
         .then(res => res.json())
-        .then(data => { if (data.email) setUser(data); else router.push('/login'); })
-        .catch(() => router.push('/login'));
+        .then(data => { 
+          if (data.email) {
+            setUser(data);
+            setAuthLoading(false);
+          } else {
+            localStorage.removeItem("token");
+            router.push('/login'); 
+          }
+        })
+        .catch(() => {
+          localStorage.removeItem("token");
+          router.push('/login');
+        });
+    } else {
+      setAuthLoading(false);
     }
-  }, [pathname, router]);
+  }, [pathname, router, user]);
 
   useEffect(() => {
     setIsMobileOpen(false);
   }, [pathname]);
+
+  if (!mounted || (authLoading && !pathname.startsWith('/login') && !pathname.startsWith('/register'))) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-[#fafafa] dark:bg-[#0b0e14]">
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-cyan-400 grid place-items-center shadow-lg shadow-indigo-500/20 animate-pulse">
+          <Bug className="h-6 w-6 text-white" />
+        </div>
+      </div>
+    );
+  }
 
   if (pathname.startsWith('/login') || pathname.startsWith('/register')) {
     return <>{children}</>;
